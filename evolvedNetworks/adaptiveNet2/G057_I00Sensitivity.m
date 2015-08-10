@@ -58,7 +58,7 @@ ode_rate_constants = [fb00 bb00 kp00 fb01 bb01 kp01 fb02 kp02 fb03 bb02 kp03 bb0
 
 % time interval
 t0= 0;
-tf= 2000000;
+tf= 200000;
 
 % call solver routine 
 global event_times;
@@ -119,7 +119,7 @@ ode_rate_constants(j)=ode_rate_constants(j)-0.1*ode_rate_constants(j);
 
 % time interval
 t0= 0;
-tf= 200000;
+tf= 2000000;
 
 ode_events = [0 0 0 0 0 0 0 0 0];
 [t, y, intervals]= G057_I00_ode_event(@ode23s, @G057_I00_odes, [t0:1.0:tf], ivalues, odeset(), ode_events, [500.0], [0.001], [1e-06]);
@@ -173,7 +173,7 @@ ode_rate_constants(j)=ode_rate_constants(j)-0.1*ode_rate_constants(j);
 
 % time interval
 t0= 0;
-tf= 500000;
+tf= 200000;
 
 ode_events = [0 0 0 0 0 0 0 0 0];
 [t, y, intervals]= G057_I00_ode_event(@ode23s, @G057_I00_odes, [t0:1.0:tf], ivalues, odeset(), ode_events, [500.0], [0.001], [1e-06]);
