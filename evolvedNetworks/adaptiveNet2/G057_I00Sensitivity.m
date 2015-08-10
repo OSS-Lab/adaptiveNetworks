@@ -173,7 +173,7 @@ ode_rate_constants(j)=ode_rate_constants(j)-0.1*ode_rate_constants(j);
 
 % time interval
 t0= 0;
-tf= 200000;
+tf= 2000000;
 
 ode_events = [0 0 0 0 0 0 0 0 0];
 [t, y, intervals]= G057_I00_ode_event(@ode23s, @G057_I00_odes, [t0:1.0:tf], ivalues, odeset(), ode_events, [500.0], [0.001], [1e-06]);
