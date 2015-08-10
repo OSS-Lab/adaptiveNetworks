@@ -63,7 +63,7 @@ ode_rate_constants = [fb00 bb00 kp00 fb01 bb01 kp01 fb02 kp02 fb03 bb02 kp03 fb0
 
 % time interval
 t0= 0;
-tf= 20000;
+tf= 200000;
 
 % call solver routine 
 global event_times;
@@ -76,9 +76,6 @@ ode_events = [0 0 0 0 0 0 0 0 0];
 G0401 = y(:,1); TG00000 = y(:,2); G0401_TG00000i00 = y(:,3); TG00001 = y(:,4); G0976R = y(:,5); G0976R_TG00001i01 = y(:,6); G0976R_TG00000i00 = y(:,7); G0976T = y(:,8); G0976T_TG00001i01 = y(:,9); G0976T_TG00000i00 = y(:,10); 
 G0000_G0401i00 = y(:,11); G0000_G0401_TG00000i00 = y(:,12); G0000_G0976Ri00 = y(:,13); G0000_G0976R_TG00000i00 = y(:,14); G0000_G0976Ti00 = y(:,15); G0000_G0976T_TG00000i00 = y(:,16); G0000 = y(:,17); LG0000 = y(:,18); G0000_LG0000i00 = y(:,19); G0000_G0401_LG0000i00 = y(:,20); 
 G0000_G0976R_LG0000i00 = y(:,21); G0000_G0976T_LG0000i00 = y(:,22); 
-
-
-
 
 
 if (ode_num_calls > 0)
@@ -219,7 +216,7 @@ plus10perc(j)=fitness;
 
 end
 
-up10perc=(plus10perc-orig)/orig;
-down10perc=(minus10perc-orig)/orig;
+up10perc=(plus10perc - orig)./orig;
+down10perc=(minus10perc - orig)./orig;
 bar(transpose([down10perc;up10perc]));
 

@@ -216,7 +216,7 @@ plus10perc(j)=fitness;
 
 end
 
-up10perc=(plus10perc-orig)/orig;
-down10perc=(minus10perc-orig)/orig;
+up10perc=(plus10perc-orig)./orig;
+down10perc=(minus10perc-orig)./orig;
 bar(transpose([down10perc;up10perc]));
 
