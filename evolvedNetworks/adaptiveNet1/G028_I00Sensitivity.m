@@ -36,6 +36,12 @@ ivalues = [G0401 TG00000 G0401_TG00000i00 TG00001 G080200 G080200_TG00001i00 G00
 	G0000_G0000_G080200i00 G0000_G0000_G080200i01 G0000_G0000_G080200i02 G0000_G0401_LG0000i00 G0000_G080200_LG0000i00 G0000_G080200_LG0000i01 G0000_G080200_LG0000i02];
 end
 % rate constants and constant expressions
+
+clamp_sink_LG0000 = 4.0;
+global ode_rate_constants;
+global event_times;
+global event_flags;
+
 fb00             = 0.125892541179417;
 bb00             = 0.501187233627272;
 kp00             = 0.586581613397342;
@@ -48,8 +54,7 @@ bb03             = 0.251188643150958;
 bb04             = 1.99526231496888;
 fb03             = 0.0630957344480194;
 bb05             = 3.98107170553497;
-clamp_sink_LG0000 = 4.0;
-global ode_rate_constants;
+
 ode_rate_constants = [fb00 bb00 kp00 fb01 bb01 kp01 bb02 fb02 bb03 bb04 fb03 bb05 ...
 	clamp_sink_LG0000];
 
@@ -58,8 +63,7 @@ t0= 0;
 tf= 200000;
 
 % call solver routine 
-global event_times;
-global event_flags;
+
 ode_events = [0 0 0 0 0 0 0 0 0];
 [t, y, intervals]= G028_I00_ode_event(@ode23s, @G028_I00_odes, [t0:1.0:tf], ivalues, odeset(), ode_events, [500.0], [0.001], [1e-06]);
 
@@ -79,9 +83,62 @@ if (ode_num_calls > 0)
   disp (str)
 end
 
-% issue done message for calling/wrapper scripts
-str = sprintf('Facile driver script done (elapsed time %f)',toc);
-disp (str)
+indices=zeros(1,length(event_times));
+for i = 1:length(event_times)
+indices(i) = find(t<=event_times(i),1,'last');
+end
+
+fitness = 0.0001;
+
+for i = 1:length(indices)-1
+    range_max=max(TG00001(indices(i):indices(i+1)));
+    range_min=min(TG00001(indices(i):indices(i+1)));
+    diff=max(abs(range_max-TG00001(indices(i))),abs(range_min-TG00001(indices(i))));
+    ss=abs(TG00001(indices(i))-TG00001(indices(i+1)));
+    maxdy=(0.001*10^ceil(i/2));
+    fitness=fitness*max(min(diff*2/maxdy,0.99),0.001);
+    fitness=fitness*min(abs(1-max(ss*2*10/maxdy,0.0001)),1);
+end
+
+fitness = (fitness/0.0001)^(1/(2*(length(indices)-1)));
+
+orig=fitness;
+
+for i = 1:length(ode_rate_constants)
+
+ode_rate_constants = [fb00 bb00 kp00 fb01 bb01 kp01 bb02 fb02 bb03 bb04 fb03 bb05 ...
+	clamp_sink_LG0000];
+
+ode_rate_constants(i)=ode_rate_constants(i)-0.1*ode_rate_constants(i);
+
+% time interval
+t0= 0;
+tf= 200000;
+
+% call solver routine 
+ode_events = [0 0 0 0 0 0 0 0 0];
+[t, y, intervals]= G028_I00_ode_event(@ode23s, @G028_I00_odes, [t0:1.0:tf], ivalues, odeset(), ode_events, [500.0], [0.001], [1e-06]);
+
+% map free node state vector names
+G0401 = y(:,1); TG00000 = y(:,2); G0401_TG00000i00 = y(:,3); TG00001 = y(:,4); G080200 = y(:,5); 
+G080200_TG00001i00 = y(:,6); G0000_G0401i00 = y(:,7); G0000_G0401_TG00000i00 = y(:,8); 
+G0000_G080200i00 = y(:,9); G0000_G080200_TG00001i00 = y(:,10); G0000_G080200i01 = y(:,11); 
+G0000_G080200_TG00001i01 = y(:,12); G0000 = y(:,13); G0000_G080200i02 = y(:,14); LG0000 = y(:,15); 
+G0000_LG0000i00 = y(:,16); G0000_G0000_G080200i00 = y(:,17); G0000_G0000_G080200i01 = y(:,18); 
+G0000_G0000_G080200i02 = y(:,19); G0000_G0401_LG0000i00 = y(:,20); G0000_G080200_LG0000i00 = y(:,21); 
+G0000_G080200_LG0000i01 = y(:,22); G0000_G080200_LG0000i02 = y(:,23); 
+
+%subplot(2,1,1); semilogy(t,LG0000); ylim([0.1, 1000]);subplot(2,1,2); plot(t,TG00001);
+
+if (ode_num_calls > 0)
+  ode_avg_cputime = ode_tot_cputime/ode_num_calls*1000;
+  str = sprintf('ODE STATS: num ode calls=%d, tot time=%f, avg time=%fms', ode_num_calls, ode_tot_cputime, ode_avg_cputime);
+  disp (str)
+end
+
+
+
+end
 
 
 
