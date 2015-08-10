@@ -168,7 +168,7 @@ for j = 1:length(ode_rate_constants)-1
 ode_rate_constants = [fb00 bb00 kp00 fb01 bb01 kp01 fb02 kp02 fb03 bb02 kp03 bb03 ...
 	fu00 bu00 fu01 bu01 clamp_sink_LG0000];
 
-ode_rate_constants(j)=ode_rate_constants(j)-0.1*ode_rate_constants(j);
+ode_rate_constants(j)=ode_rate_constants(j)+0.1*ode_rate_constants(j);
 
 
 % time interval
