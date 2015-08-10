@@ -205,7 +205,7 @@ for i = 1:length(indices)-1
     range_min=min(TG00001(indices(i):indices(i+1)));
     diff=max(abs(range_max-TG00001(indices(i))),abs(range_min-TG00001(indices(i))));
     ss=abs(TG00001(indices(i))-TG00001(indices(i+1)));
-    maxdy=(0.001*10^ceil(i/2));
+    maxdy=(1*10^ceil(i/2));
     fitness=fitness*max(min(diff*2/maxdy,0.99),0.001);
     fitness=fitness*min(abs(1-max(ss*2*10/maxdy,0.0001)),1);
 end
